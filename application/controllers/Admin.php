@@ -176,6 +176,28 @@ class Admin extends CI_Controller
 	}
 	function saveStock()
 	{
+		if ($this->input->is_ajax_request()) {
+			if (strlen($this->input->post('id')) != 0) {
+				$barang = $this->input->post();
+				$result = $this->gmodel->update('tbl_stok', $barang, array('id' => $barang['id']));
+			} else {
+				echo json_encode(array('errorMsg' => 'Some errors occured.'));
+				return;
+			}
+			if ($result) {
+				echo json_encode(array('message' => 'Update Success'));
+				return;
+			} else {
+				echo json_encode(array('errorMsg' => 'Some errors occured.'));
+				return;
+			}
+		} else {
+			show_404($page = '', $log_error = TRUE);
+		}
+	}
+	public function downloadTemplateStok()
+	{
+		force_download('assets/files/templatestok.xlsx', NULL);
 	}
 	//endstok
 	//barang masuk
@@ -237,6 +259,67 @@ class Admin extends CI_Controller
 			echo 'failed q1';
 		}
 	}
+	//end barang masuk
+	//barang keluar
+	function barangKeluar()
+	{
+		$data['title']  = 'Input Barang Keluar';
+		$data['css_files'][] = base_url() . 'assets/admin/plugins/select2/css/select2.min.css';
+		$data['css_files'][] = base_url() . 'assets/admin/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css';
+		$data['js_files'][] = base_url() . 'assets/admin/plugins/select2/js/select2.full.min.js';
+		$data['js_files'][] = base_url() . 'assets/admin/plugins/inputmask/jquery.inputmask.min.js';
+		$data['js_files'][] = base_url() . 'assets/admin/plugins/inputmask/bindings/inputmask.binding.js';
+		$this->template->load('template', 'barang/barangkeluar', $data);
+	}
+	function saveBarangKeluar()
+	{
+		$data = $this->input->post();
+		$kdFaktur = $data['kode_faktur'];
+		$kdSupllier = $data['kode_supplier'];
+		$tglTransaksi = $data['tgl_transaksi'];
+		$grandtotal = $data['grandtotal'];
+		$dataFaktur = array(
+			'kode_faktur'	=> $kdFaktur,
+			'id_supplier'	=> $kdSupllier,
+			'tgl_transaksi'	=> $tglTransaksi,
+			'grandtotal'	=> filter_var(str_replace(".", "", $grandtotal), FILTER_SANITIZE_NUMBER_INT)
+		);
+		$q1 = $this->gmodel->insert('tbl_barang_masuk', $dataFaktur);
+		if ($q1) {
+			$dataRinci = array();
+			$dataStok = array();
+			for ($i = 0; $i < count($data['kode_barang']); $i++) {
+				$dataRinci[] = array(
+					'kode_faktur' 	=> $data['kode_faktur'],
+					'kode_barang' 	=> $data['kode_barang'][$i],
+					'kode_batch' 	=> $data['kode_batch'][$i],
+					'tgl_expired' 	=> $data['tgl_expired'][$i],
+					'jumlah'		=> $data['jumlah'][$i],
+					'harga'			=> filter_var(str_replace(".", "", $data['harga'][$i]), FILTER_SANITIZE_NUMBER_INT),
+					'total'			=> $data['jumlah'][$i] * $data['harga'][$i],
+				);
+				$dataStok = array(
+					'kode_barang' 	=> $data['kode_barang'][$i],
+					'kode_batch' 	=> $data['kode_batch'][$i],
+					'tgl_expired' 	=> $data['tgl_expired'][$i],
+					'total'			=> intval($data['jumlah'][$i], 10),
+					'combined_key'	=> $data['kode_barang'][$i] . '-' . $data['kode_batch'][$i],
+				);
+				$q3 = $this->gmodel->insertorupdateincrement('tbl_stok', $dataStok);
+			}
+			$q2 = $this->gmodel->insertbatch('tbl_barang_masuk_detail', $dataRinci);
+			// $q3 = $this->gmodel->insertorupdate('tbl_stok', $dataStok);
+			// $q3 = $this->db->insert_on_duplicate_update_batch('tbl_stok', $dataStok);
+			if ($q2) {
+				return redirect(base_url() . 'admin/stok');
+			} else {
+				echo 'failde q2';
+			}
+		} else {
+			echo 'failed q1';
+		}
+	}
+	//endbarang keluar
 	function test()
 	{
 		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian

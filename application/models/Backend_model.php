@@ -14,6 +14,13 @@ class Backend_model extends CI_Model
 	{
 		return $this->db->get('tbl_barang');
 	}
+	function getAllStok()
+	{
+		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total');
+		$this->db->from('tbl_stok s');
+		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
+		return $this->db->get();
+	}
 
 	// function getBarang()
 	// {

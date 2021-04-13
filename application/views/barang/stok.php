@@ -21,8 +21,10 @@
 						</div>
 					</div>
 					<div class="card-body">
-						<a href="<?= base_url() . 'export/exportbarang' ?>" class="btn btn-info btn-rounded">Export Excel</a>
+						<a href="<?= base_url() . 'export/exportstok' ?>" class="btn btn-info btn-rounded">Export Excel</a>
+						<button class="btn btn-success btn-rounded" onclick="formUpload()">Import Excel</button>
 						<button class="btn btn-secondary btn-rounded">Print</button>
+						<a href="<?= base_url() . 'export/exportstoktemplate' ?>" class="btn btn-secondary btn-rounded">Download Template</a>
 					</div>
 				</div>
 			</div>
@@ -52,6 +54,29 @@
 			</div>
 		</div>
 	</section>
+</div>
+<div class="modal fade" id="modal-upload">
+	<div class="modal-dialog modal-xl">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Extra Large Modal</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form id="up" method="post" enctype="multipart/form-data" action="<?= base_url() ?>importn/uploadstok">
+					<input type="file" name="file" class="form-control">
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="submit" class="btn btn-primary">Simpan</button>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
 </div>
 <div class="modal fade" id="modal-form">
 	<div class="modal-dialog modal-xl">
@@ -121,15 +146,36 @@
 				}, // Tampilkan nama
 				{
 					data: "kode_batch",
-					name: 'kode_batch'
+					name: 'kode_batch',
+					render: function(data, type, row) {
+						if (!data) {
+							return 'kosong'
+						} else {
+							return data
+						}
+					}
 				}, // Tampilkan alamat
 				{
 					data: "total",
-					name: 'total'
+					name: 'total',
+					render: function(data, type, row) {
+						if (!data) {
+							return 'kosong'
+						} else {
+							return data
+						}
+					}
 				}, // Tampilkan alamat
 				{
 					data: "tgl_expired",
-					name: 'tgl_expired'
+					name: 'tgl_expired',
+					render: function(data, type, row) {
+						if (!data) {
+							return 'kosong'
+						} else {
+							return data
+						}
+					}
 				}, // Tampilkan telepon
 				{
 					data: "action",
@@ -139,7 +185,19 @@
 				}, // Tampilkan telepon
 			],
 		});
+		$('body').on('click', '.edit', function() {
+			let data = table.row($(this).parents('tr')).data();
+			edit(data)
+		});
+		$('body').on('click', '.delete', function() {
+			let data = table.row($(this).parents('tr')).data();
+			deleteData(data)
+		})
 	});
+
+	function formUpload() {
+		$('#modal-upload').modal('toggle');
+	}
 
 	function edit(row) {
 		$('#modal-form').modal('toggle');

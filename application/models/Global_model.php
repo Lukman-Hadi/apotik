@@ -51,11 +51,9 @@ class Global_model extends CI_Model
 		foreach ($data as $key => $value) {
 			$duplicate_data[] = sprintf("%s='%s'", $key, $value);
 		}
-		var_dump($duplicate_data);
-
-		// $sql = sprintf("%s ON DUPLICATE KEY UPDATE %s", $this->db->insert_string($table, $data), implode(',', $duplicate_data));
-		// $this->db->query($sql);
-		// return $this->db->insert_id();
+		$sql = sprintf("%s ON DUPLICATE KEY UPDATE %s", $this->db->insert_string($table, $data), implode(',', $duplicate_data));
+		$this->db->query($sql);
+		return $this->db->insert_id();
 	}
 	function insertorupdateincrement($table, $data)
 	{
