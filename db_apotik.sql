@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 11, 2021 at 04:06 PM
+-- Generation Time: Apr 14, 2021 at 05:16 PM
 -- Server version: 10.1.37-MariaDB
 -- PHP Version: 7.2.25
 
@@ -156,6 +156,18 @@ CREATE TABLE `tbl_barang_keluar` (
   `tgl_transaksi` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `tbl_barang_keluar`
+--
+
+INSERT INTO `tbl_barang_keluar` (`id`, `kode_faktur`, `pembeli`, `jumlah`, `tgl_transaksi`) VALUES
+(1, 'test', 'admin', 0, '2021-04-01'),
+(2, 'asdasdasd', 'admin', 1200000, '2021-04-16'),
+(3, 'asdasdasd', 'admin', 1200000, '2021-04-01'),
+(4, 'asdasdasd', 'admin', 1100000, '2021-04-01'),
+(5, 'asdasdasd', 'admin', 1000000, '2021-04-01'),
+(6, 'asdasdasd', 'admin', 900000, '2021-04-02');
+
 -- --------------------------------------------------------
 
 --
@@ -169,6 +181,23 @@ CREATE TABLE `tbl_barang_keluar_detail` (
   `kode_batch` varchar(255) NOT NULL,
   `total` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_barang_keluar_detail`
+--
+
+INSERT INTO `tbl_barang_keluar_detail` (`id`, `kode_faktur`, `kode_barang`, `kode_batch`, `total`) VALUES
+(1, '2', 'barang-1', 'batch-2', 5),
+(2, '2', 'barang-1', '213123', 2),
+(3, '2', 'barang-1', '21321', 4),
+(4, '2', 'barang-1', 'batch-1', 1),
+(5, '3', 'barang-1', 'batch-2', 5),
+(6, '3', 'barang-1', '213123', 2),
+(7, '3', 'barang-1', '21321', 4),
+(8, '3', 'barang-1', 'batch-1', 1),
+(9, '4', 'barang-10', 'batch-1', 11),
+(10, '5', 'barang-10', 'batch-1', 10),
+(11, '6', 'barang-10', 'batch-1', 9);
 
 -- --------------------------------------------------------
 
@@ -194,7 +223,9 @@ INSERT INTO `tbl_barang_masuk` (`id`, `kode_faktur`, `id_supplier`, `grandtotal`
 (3, 'asdasdasd', 2, 0, '2021-04-01'),
 (4, 'asdasdasd', 2, 0, '2021-04-01'),
 (5, 'asdasdasd', 2, 0, '2021-04-01'),
-(6, 'asdasdasd', 2, 10000000, '2021-04-01');
+(6, 'asdasdasd', 2, 10000000, '2021-04-01'),
+(7, 'f-102310', 3, 10000000, '2021-04-01'),
+(8, 'f-012301545', 2, 2000000, '2021-04-14');
 
 -- --------------------------------------------------------
 
@@ -232,7 +263,11 @@ INSERT INTO `tbl_barang_masuk_detail` (`id`, `kode_faktur`, `kode_barang`, `kode
 (12, 'f-001', 'barang-1', 'batch-1', 20000, '2021-04-01', 10, 200000),
 (13, 'f-001', 'barang-1', 'batch-2', 20000, '2021-04-27', 10, 200000),
 (14, 'f-002', 'barang-2', 'batch-1', 0, '2021-04-30', 100, 0),
-(15, 'f-002', 'barang-6', 'batch-1', 0, '2021-04-29', 100, 0);
+(15, 'f-002', 'barang-6', 'batch-1', 0, '2021-04-29', 100, 0),
+(16, 'f-102310', 'barang-10', 'batch-1', 2000, '2021-04-15', 2, 0),
+(17, 'f-102310', 'barang-10', 'batch-2', 2000, '2021-04-30', 3, 0),
+(18, 'f-012301545', 'barang-10', 'batch-1', 2000, '2021-04-01', 3, 0),
+(19, 'f-012301545', 'barang-10', 'batch-2', 2000, '2021-04-30', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -270,13 +305,110 @@ CREATE TABLE `tbl_stok` (
 --
 
 INSERT INTO `tbl_stok` (`id`, `kode_barang`, `kode_batch`, `total`, `tgl_expired`, `combined_key`) VALUES
-(1, 'barang-1', 'batch-1', 11, NULL, 'barang-1-batch-1'),
-(3, 'barang-1', '213123', 8, '2021-04-12', 'barang-1-213123'),
-(4, 'barang-6', '213123', 4, '2021-04-02', 'barang-6-213123'),
-(19, 'barang-1', '21321', 10, '2021-04-27', 'barang-1-21321'),
-(21, 'barang-1', 'batch-2', 10, '2021-04-27', 'barang-1-batch-2'),
-(22, 'barang-2', 'batch-1', 100, '2021-04-30', 'barang-2-batch-1'),
-(23, 'barang-6', 'batch-1', 100, '2021-04-29', 'barang-6-batch-1');
+(1, 'barang-1', 'batch-1', 0, '2021-04-02', 'barang-1-batch-1'),
+(3, 'barang-1', '213123', 0, '2021-04-12', 'barang-1-213123'),
+(4, 'barang-6', '213123', 3, '2021-04-02', 'barang-6-213123'),
+(19, 'barang-1', '21321', 0, '2021-04-27', 'barang-1-21321'),
+(21, 'barang-1', 'batch-2', 0, '2021-04-27', 'barang-1-batch-2'),
+(22, 'barang-2', 'batch-1', 6, '2021-04-30', 'barang-2-batch-1'),
+(23, 'barang-6', 'batch-1', 7, '2021-04-29', 'barang-6-batch-1'),
+(546, 'barang-3', 'batch-1', 9, '2021-04-29', 'barang-3-batch-1'),
+(547, 'barang-4', 'batch-1', 10, '2021-04-29', 'barang-4-batch-1'),
+(548, 'barang-5', 'batch-1', 11, '2021-04-29', 'barang-5-batch-1'),
+(549, 'barang-7', 'batch-1', 12, '2021-04-29', 'barang-7-batch-1'),
+(550, 'barang-8', 'batch-1', 13, '2021-04-29', 'barang-8-batch-1'),
+(551, 'barang-9', 'batch-1', 14, '2021-04-29', 'barang-9-batch-1'),
+(552, 'barang-10', 'batch-1', 170, '2021-04-30', 'barang-10-batch-1'),
+(553, 'barang-11', 'batch-1', 16, '2021-04-29', 'barang-11-batch-1'),
+(554, 'barang-12', 'batch-1', 17, '2021-04-29', 'barang-12-batch-1'),
+(555, 'barang-13', 'batch-1', 18, '2021-04-29', 'barang-13-batch-1'),
+(556, 'barang-14', 'batch-1', 19, '2021-04-29', 'barang-14-batch-1'),
+(557, 'barang-15', 'batch-1', 20, '2021-04-29', 'barang-15-batch-1'),
+(558, 'barang-16', 'batch-1', 21, '2021-04-29', 'barang-16-batch-1'),
+(559, 'barang-17', 'batch-1', 22, '2021-04-29', 'barang-17-batch-1'),
+(560, 'barang-18', 'batch-1', 23, '2021-04-29', 'barang-18-batch-1'),
+(561, 'barang-19', 'batch-1', 24, '2021-04-29', 'barang-19-batch-1'),
+(562, 'barang-20', 'batch-1', 25, '2021-04-29', 'barang-20-batch-1'),
+(563, 'barang-21', 'batch-1', 26, '2021-04-29', 'barang-21-batch-1'),
+(564, 'barang-22', 'batch-1', 27, '2021-04-29', 'barang-22-batch-1'),
+(565, 'barang-23', 'batch-1', 28, '2021-04-29', 'barang-23-batch-1'),
+(566, 'barang-24', 'batch-1', 29, '2021-04-29', 'barang-24-batch-1'),
+(567, 'barang-25', 'batch-1', 30, '2021-04-29', 'barang-25-batch-1'),
+(568, 'barang-26', 'batch-1', 31, '2021-04-29', 'barang-26-batch-1'),
+(569, 'barang-27', 'batch-1', 32, '2021-04-29', 'barang-27-batch-1'),
+(570, 'barang-28', 'batch-1', 33, '2021-04-29', 'barang-28-batch-1'),
+(571, 'barang-29', 'batch-1', 34, '2021-04-29', 'barang-29-batch-1'),
+(572, 'barang-30', 'batch-1', 35, '2021-04-29', 'barang-30-batch-1'),
+(573, 'barang-31', 'batch-1', 36, '2021-04-29', 'barang-31-batch-1'),
+(574, 'barang-32', 'batch-1', 37, '2021-04-29', 'barang-32-batch-1'),
+(575, 'barang-33', 'batch-1', 38, '2021-04-29', 'barang-33-batch-1'),
+(576, 'barang-34', 'batch-1', 39, '2021-04-29', 'barang-34-batch-1'),
+(577, 'barang-35', 'batch-1', 40, '2021-04-29', 'barang-35-batch-1'),
+(578, 'barang-36', 'batch-1', 41, '2021-04-29', 'barang-36-batch-1'),
+(579, 'barang-37', 'batch-1', 42, '2021-04-29', 'barang-37-batch-1'),
+(580, 'barang-38', 'batch-1', 43, '2021-04-29', 'barang-38-batch-1'),
+(581, 'barang-39', 'batch-1', 44, '2021-04-29', 'barang-39-batch-1'),
+(582, 'barang-40', 'batch-1', 45, '2021-04-29', 'barang-40-batch-1'),
+(583, 'barang-41', 'batch-1', 46, '2021-04-29', 'barang-41-batch-1'),
+(584, 'barang-42', 'batch-1', 47, '2021-04-29', 'barang-42-batch-1'),
+(585, 'barang-43', 'batch-1', 48, '2021-04-29', 'barang-43-batch-1'),
+(586, 'barang-44', 'batch-1', 49, '2021-04-29', 'barang-44-batch-1'),
+(587, 'barang-45', 'batch-1', 50, '2021-04-29', 'barang-45-batch-1'),
+(588, 'barang-46', 'batch-1', 51, '2021-04-29', 'barang-46-batch-1'),
+(589, 'barang-47', 'batch-1', 52, '2021-04-29', 'barang-47-batch-1'),
+(590, 'barang-48', 'batch-1', 53, '2021-04-29', 'barang-48-batch-1'),
+(591, 'barang-49', 'batch-1', 54, '2021-04-29', 'barang-49-batch-1'),
+(592, 'barang-50', 'batch-1', 55, '2021-04-29', 'barang-50-batch-1'),
+(593, 'barang-51', 'batch-1', 56, '2021-04-29', 'barang-51-batch-1'),
+(594, 'barang-52', 'batch-1', 57, '2021-04-29', 'barang-52-batch-1'),
+(595, 'barang-53', 'batch-1', 58, '2021-04-29', 'barang-53-batch-1'),
+(596, 'barang-54', 'batch-1', 59, '2021-04-29', 'barang-54-batch-1'),
+(597, 'barang-55', 'batch-1', 60, '2021-04-29', 'barang-55-batch-1'),
+(598, 'barang-56', 'batch-1', 61, '2021-04-29', 'barang-56-batch-1'),
+(599, 'barang-57', 'batch-1', 62, '2021-04-29', 'barang-57-batch-1'),
+(600, 'barang-58', 'batch-1', 63, '2021-04-29', 'barang-58-batch-1'),
+(601, 'barang-59', 'batch-1', 64, '2021-04-29', 'barang-59-batch-1'),
+(602, 'barang-60', 'batch-1', 65, '2021-04-29', 'barang-60-batch-1'),
+(603, 'barang-61', 'batch-1', 66, '2021-04-29', 'barang-61-batch-1'),
+(604, 'barang-62', 'batch-1', 67, '2021-04-29', 'barang-62-batch-1'),
+(605, 'barang-63', 'batch-1', 68, '2021-04-29', 'barang-63-batch-1'),
+(606, 'barang-64', 'batch-1', 69, '2021-04-29', 'barang-64-batch-1'),
+(607, 'barang-65', 'batch-1', 70, '2021-04-29', 'barang-65-batch-1'),
+(608, 'barang-66', 'batch-1', 71, '2021-04-29', 'barang-66-batch-1'),
+(609, 'barang-67', 'batch-1', 72, '2021-04-29', 'barang-67-batch-1'),
+(610, 'barang-68', 'batch-1', 73, '2021-04-29', 'barang-68-batch-1'),
+(611, 'barang-69', 'batch-1', 74, '2021-04-29', 'barang-69-batch-1'),
+(612, 'barang-70', 'batch-1', 75, '2021-04-29', 'barang-70-batch-1'),
+(613, 'barang-71', 'batch-1', 76, '2021-04-29', 'barang-71-batch-1'),
+(614, 'barang-72', 'batch-1', 77, '2021-04-29', 'barang-72-batch-1'),
+(615, 'barang-73', 'batch-1', 78, '2021-04-29', 'barang-73-batch-1'),
+(616, 'barang-74', 'batch-1', 79, '2021-04-29', 'barang-74-batch-1'),
+(617, 'barang-75', 'batch-1', 80, '2021-04-29', 'barang-75-batch-1'),
+(618, 'barang-76', 'batch-1', 81, '2021-04-29', 'barang-76-batch-1'),
+(619, 'barang-77', 'batch-1', 82, '2021-04-29', 'barang-77-batch-1'),
+(620, 'barang-78', 'batch-1', 83, '2021-04-29', 'barang-78-batch-1'),
+(621, 'barang-79', 'batch-1', 84, '2021-04-29', 'barang-79-batch-1'),
+(622, 'barang-80', 'batch-1', 85, '2021-04-29', 'barang-80-batch-1'),
+(623, 'barang-81', 'batch-1', 86, '2021-04-29', 'barang-81-batch-1'),
+(624, 'barang-82', 'batch-1', 87, '2021-04-29', 'barang-82-batch-1'),
+(625, 'barang-83', 'batch-1', 88, '2021-04-29', 'barang-83-batch-1'),
+(626, 'barang-84', 'batch-1', 89, '2021-04-29', 'barang-84-batch-1'),
+(627, 'barang-85', 'batch-1', 90, '2021-04-29', 'barang-85-batch-1'),
+(628, 'barang-86', 'batch-1', 91, '2021-04-29', 'barang-86-batch-1'),
+(629, 'barang-87', 'batch-1', 92, '2021-04-29', 'barang-87-batch-1'),
+(630, 'barang-88', 'batch-1', 93, '2021-04-29', 'barang-88-batch-1'),
+(631, 'barang-89', 'batch-1', 94, '2021-04-29', 'barang-89-batch-1'),
+(632, 'barang-90', 'batch-1', 95, '2021-04-29', 'barang-90-batch-1'),
+(633, 'barang-91', 'batch-1', 96, '2021-04-29', 'barang-91-batch-1'),
+(634, 'barang-92', 'batch-1', 97, '2021-04-29', 'barang-92-batch-1'),
+(635, 'barang-93', 'batch-1', 98, '2021-04-29', 'barang-93-batch-1'),
+(636, 'barang-94', 'batch-1', 99, '2021-04-29', 'barang-94-batch-1'),
+(637, 'barang-95', 'batch-1', 100, '2021-04-29', 'barang-95-batch-1'),
+(638, 'barang-96', 'batch-1', 101, '2021-04-29', 'barang-96-batch-1'),
+(639, 'barang-97', 'batch-1', 102, '2021-04-29', 'barang-97-batch-1'),
+(640, 'barang-98', 'batch-1', 103, '2021-04-29', 'barang-98-batch-1'),
+(641, 'barang-99', 'batch-1', 104, '2021-04-29', 'barang-99-batch-1'),
+(643, 'barang-10', 'batch-2', 5, '2021-04-30', 'barang-10-batch-2');
 
 -- --------------------------------------------------------
 
@@ -386,25 +518,25 @@ ALTER TABLE `tbl_barang`
 -- AUTO_INCREMENT for table `tbl_barang_keluar`
 --
 ALTER TABLE `tbl_barang_keluar`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tbl_barang_keluar_detail`
 --
 ALTER TABLE `tbl_barang_keluar_detail`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `tbl_barang_masuk`
 --
 ALTER TABLE `tbl_barang_masuk`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tbl_barang_masuk_detail`
 --
 ALTER TABLE `tbl_barang_masuk_detail`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `tbl_perusahaan`
@@ -416,7 +548,7 @@ ALTER TABLE `tbl_perusahaan`
 -- AUTO_INCREMENT for table `tbl_stok`
 --
 ALTER TABLE `tbl_stok`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=644;
 
 --
 -- AUTO_INCREMENT for table `tbl_supplier`
