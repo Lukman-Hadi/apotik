@@ -4,7 +4,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1 class="m-0 text-dark">Dashboard</h1>
+					<h1 class="m-0 text-dark"><?= $title ?></h1>
 				</div><!-- /.col -->
 			</div><!-- /.row -->
 		</div><!-- /.container-fluid -->
@@ -71,15 +71,15 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body">
-						<table id="tbl-barang" class="table table-bordered table-striped">
+						<table id="tbl-barang" class="table table-bordered table-striped" style="width: 100%;">
 							<thead>
-								<tr style="width: 100%;">
-									<th style="width: 30%;">Kode Barang</th>
+								<tr>
+									<th>Kode Barang</th>
 									<th>Nama Barang</th>
 									<th>Kode Batch</th>
-									<th>Total</th>
-									<th>Tanggal Expired</th>
-									<th></th>
+									<th style="width: 5%;">Total</th>
+									<th style="width: 15%;">Tanggal Expired</th>
+									<th style="width: 5%;"></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -113,11 +113,12 @@
 				}, // Tampilkan nis
 				{
 					data: "nama_barang",
-					name: 'nama_barang'
+					name: 'nama_barang',
 				}, // Tampilkan nama
 				{
 					data: "kode_batch",
 					name: 'kode_batch',
+					orderable: false,
 					render: function(data, type, row) {
 						if (!data) {
 							return 'kosong'
@@ -129,6 +130,7 @@
 				{
 					data: "total",
 					name: 'total',
+					orderable: false,
 					render: function(data, type, row) {
 						if (!data) {
 							return 'kosong'
@@ -140,6 +142,7 @@
 				{
 					data: "tgl_expired",
 					name: 'tgl_expired',
+					orderable: false,
 					render: function(data, type, row) {
 						if (!data) {
 							return 'kosong'
@@ -166,7 +169,8 @@
 	});
 
 	function addRow(data) {
-		if (data.total != 0) {
+		// console.log(`data`, data)
+		if (data.total > 0) {
 			let id = data.combined_key;
 			if ($(`#${id}`).length) {
 				let jumlah = parseInt($(`#${id}`).val());
@@ -183,7 +187,7 @@
 				let content = `<tr id="inputFormRow">
 			<td>${data.kode_barang} - ${data.nama_barang}</td>
 			<td>${data.kode_batch}</td>
-			<td><input type="hidden" name="id_stok[]" value="${data.id}"><input type="hidden" name="harga[]" value="${data.harga}"><input type="hidden" name="kode_batch[]" value="${data.kode_batch}"><input type="hidden" name="id_barang[]" value="${data.kode_barang}"><input type="number" id="${data.combined_key}" class="form-control" min="1" max="${data.total}" name="jumlah[]" value="1" placeholder=""></td>
+			<td><input type="hidden" name="id_stok[]" value="${data.id_stok}"><input type="hidden" name="harga[]" value="${data.harga}"><input type="hidden" name="tgl_expired[]" value="${data.tgl_expired}"><input type="hidden" name="kode_batch[]" value="${data.kode_batch}"><input type="hidden" name="id_barang[]" value="${data.id_barang}"><input type="number" id="${data.combined_key}" class="form-control" min="1" max="${data.total}" name="jumlah[]" value="1" placeholder=""></td>
 			<td><button class="btn btn-danger" id="removeRow">X</button> </td>
 			</tr>`
 				$("#tbl-keluar tbody").append(content);

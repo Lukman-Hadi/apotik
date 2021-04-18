@@ -1,8 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
 	<!-- Brand Logo -->
 	<a href="index3.html" class="brand-link">
-		<img src="<?= base_url() ?>assets/admin/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-		<span class="brand-text font-weight-light">AdminLTE 3</span>
+		<span class="brand-text font-weight-light"><?= perusahaan()->nama ?></span>
 	</a>
 
 	<!-- Sidebar -->
@@ -10,10 +9,10 @@
 		<!-- Sidebar user panel (optional) -->
 		<div class="user-panel mt-3 pb-3 mb-3 d-flex">
 			<div class="image">
-				<img src="<?= base_url() ?>assets/admin/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+				<img src="<?= base_url() . 'assets/img/' . perusahaan()->logo ?>" class="img-circle elevation-2" alt="User Image">
 			</div>
 			<div class="info">
-				<a href="#" class="d-block">ADMIN</a>
+				<a href="#" class="d-block"><?= $this->session->nama ?></a>
 			</div>
 		</div>
 
@@ -30,19 +29,35 @@
 						</p>
 					</a>
 				</li>
-				<li class="nav-item">
-					<a href="<?= base_url() ?>admin/supplier" class="nav-link">
-						<i class="nav-icon fas fa-tachometer-alt"></i>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-users"></i>
 						<p>
-							Data Supplier
+							Data Pengguna
+							<i class="fas fa-angle-left right"></i>
+							<span class="badge badge-info right">6</span>
 						</p>
 					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="<?= base_url() ?>admin/user" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Data User</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= base_url() ?>admin/supplier" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Data Supplier</p>
+							</a>
+						</li>
+					</ul>
 				</li>
 				<li class="nav-item has-treeview">
 					<a href="#" class="nav-link">
 						<i class="nav-icon fas fa-warehouse"></i>
 						<p>
-							Barang
+							Gudang
 							<i class="fas fa-angle-left right"></i>
 							<span class="badge badge-info right">6</span>
 						</p>
@@ -60,6 +75,18 @@
 								<p>Stok Barang</p>
 							</a>
 						</li>
+					</ul>
+				</li>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-cash-register"></i>
+						<p>
+							Transaksi
+							<i class="fas fa-angle-left right"></i>
+							<span class="badge badge-info right">6</span>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
 						<li class="nav-item">
 							<a href="<?= base_url() ?>admin/barangmasuk" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
@@ -76,7 +103,31 @@
 				</li>
 				<li class="nav-item has-treeview">
 					<a href="#" class="nav-link">
-						<i class="nav-icon fas fa-warehouse"></i>
+						<i class="nav-icon fas fa-history"></i>
+						<p>
+							Riwayat Transaksi
+							<i class="fas fa-angle-left right"></i>
+							<span class="badge badge-info right">6</span>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item">
+							<a href="<?= base_url() ?>admin/riwayatmasuk" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Riwayat Barang Masuk</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= base_url() ?>admin/riwayatkeluar" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Riwayat Barang Keluar</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-cogs"></i>
 						<p>
 							Pengaturan
 							<i class="fas fa-angle-left right"></i>
@@ -85,26 +136,83 @@
 					</a>
 					<ul class="nav nav-treeview">
 						<li class="nav-item">
-							<a href="pages/layout/top-nav.html" class="nav-link">
+							<a href="<?= base_url() ?>admin/pengaturanperingatan" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Pengaturan Peringatan</p>
 							</a>
 						</li>
 						<li class="nav-item">
-							<a href="pages/layout/top-nav-sidebar.html" class="nav-link">
+							<a href="<?= base_url() ?>admin/pengaturanaplikasi" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Pengaturan Aplikasi</p>
 							</a>
 						</li>
 					</ul>
 				</li>
-				<li class="nav-header">EXAMPLES</li>
-				<li class="nav-item">
-					<a href="pages/calendar.html" class="nav-link">
-						<i class="nav-icon far fa-calendar-alt"></i>
+				<li class="nav-item has-treeview">
+					<a href="#" class="nav-link">
+						<i class="nav-icon fas fa-file-alt"></i>
 						<p>
-							Calendar
-							<span class="badge badge-info right">2</span>
+							Laporan
+							<i class="fas fa-angle-left right"></i>
+							<span class="badge badge-info right">6</span>
+						</p>
+					</a>
+					<ul class="nav nav-treeview">
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>
+									Laporan Stok
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?= base_url() ?>report/stok" class="nav-link">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p>Laporan Stok</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?= base_url() ?>report/hampirhabis" class="nav-link">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p style="font-size:small">Laporan Stok Hampir Habis</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?= base_url() ?>report/hampirkadaluarsa" class="nav-link">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p style="font-size:small">Laporan Stok Hampir Kadaluarsa</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?= base_url() ?>report/kadaluarsa" class="nav-link">
+										<i class="far fa-dot-circle nav-icon"></i>
+										<p>Laporan Stok Kadaluarsa</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a href="<?= base_url() ?>report/barangkeluar" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Laporan Barang Keluar</p>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a href="<?= base_url() ?>report/barangmasuk" class="nav-link">
+								<i class="far fa-circle nav-icon"></i>
+								<p>Laporan Barang Masuk</p>
+							</a>
+						</li>
+					</ul>
+				</li>
+				<li class="nav-item">
+					<a href="<?= base_url() ?>admin/logout" class="nav-link">
+						<i class="nav-icon fa fa-sign-out-alt"></i>
+						<p>
+							Logout
 						</p>
 					</a>
 				</li>

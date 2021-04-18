@@ -4,7 +4,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1 class="m-0 text-dark">Dashboard</h1>
+					<h1 class="m-0 text-dark"><?= $title ?></h1>
 				</div><!-- /.col -->
 			</div><!-- /.row -->
 		</div><!-- /.container-fluid -->
@@ -165,7 +165,7 @@
 			success: function(data) {
 				let res = data.map((d) => {
 					return {
-						id: d.kode_barang,
+						id: d.id,
 						text: `(${d.kode_barang}) ${d.nama_barang} - ${d.satuan}`
 					}
 				});
@@ -181,7 +181,7 @@
 
 	function openForm() {
 		let content = `<tr id="inputFormRow">
-			<td><div class="form-group"><select name="kode_barang[]" class="form-control select2-single" style="border: 0;width: 100%;" required></select></div></td>
+			<td><div class="form-group"><select name="id_barang[]" class="form-control select2-single" style="border: 0;width: 100%;" required></select></div></td>
 			<td><input type="text" class="form-control" name="kode_batch[]" placeholder="xxxxxxxxx"></td>
 			<td><input type="number" class="form-control" name="jumlah[]" placeholder="xxxxxxxxx"></td>
 			<td><input class="form-control currency" name="harga[]" placeholder="xxxxxxxxx"></td>
@@ -189,7 +189,7 @@
 			<td><button class="btn btn-primary" onclick="openForm()" type="button">+</button> <button class="btn btn-danger" id="removeRow">X</button> </td>
 		</tr>`
 		$("#tbl-detail tbody").append(content);
-		$('select[name^=kode_barang]').last().select2({
+		$('select[name^=id_barang]').last().select2({
 			placeholder: "Pilih Kode / Nama Barang",
 			allowClear: false,
 			data: dataBarang

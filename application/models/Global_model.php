@@ -22,6 +22,17 @@ class Global_model extends CI_Model
 	{
 		return $this->db->insert_batch($table, $data);
 	}
+	function softDelete($table, $id)
+	{
+		$rows = $this->db->get_where($table, array('id' => $id))->row_array();
+		if ($rows['is_aktif'] == 0) {
+			$aktif = 1;
+		} else {
+			$aktif = 0;
+		}
+		$result = $this->db->update($table, array('is_aktif' => $aktif), array('id' => $id));
+		return $result;
+	}
 
 	//Update Batch
 	function updatebatch($table, $data, $where)
@@ -69,5 +80,9 @@ class Global_model extends CI_Model
 		// $sql = sprintf("%s ON DUPLICATE KEY UPDATE %s", $this->db->insert_string($table, $data), implode(',', $duplicate_data));
 		// $this->db->query($sql);
 		return $this->db->insert_id();
+	}
+	function deleteEmpty()
+	{
+		return $this->db->delete('tbl_stok', array('total' => 0));
 	}
 }

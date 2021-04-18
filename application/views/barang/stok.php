@@ -4,7 +4,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1 class="m-0 text-dark">Dashboard</h1>
+					<h1 class="m-0 text-dark"><?= $title ?></h1>
 				</div><!-- /.col -->
 			</div><!-- /.row -->
 		</div><!-- /.container-fluid -->
@@ -23,7 +23,7 @@
 					<div class="card-body">
 						<a href="<?= base_url() . 'export/exportstok' ?>" class="btn btn-info btn-rounded">Export Excel</a>
 						<button class="btn btn-success btn-rounded" onclick="formUpload()">Import Excel</button>
-						<button class="btn btn-secondary btn-rounded">Print</button>
+						<a href="<?= base_url() . 'cetak/stok' ?>" target="_blank" class="btn btn-secondary btn-neutral">Print</a>
 						<a href="<?= base_url() . 'export/exportstoktemplate' ?>" class="btn btn-secondary btn-rounded">Download Template</a>
 					</div>
 				</div>
@@ -37,13 +37,14 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body">
-						<table id="tbl-barang" class="table table-bordered table-striped">
+						<table id="tbl-barang" class="table table-bordered table-striped" style="width: 100%;">
 							<thead>
 								<tr>
 									<th>Kode Barang</th>
 									<th>Nama Barang</th>
 									<th>Kode Batch</th>
-									<th>Jumlah</th>
+									<th>Harga</th>
+									<th>Jumlah Stok</th>
 									<th>Tgl Expired</th>
 									<th>Action</th>
 								</tr>
@@ -102,6 +103,10 @@
 						<input type="text" class="form-control form-control-sm" name="kode_batch" disabled>
 					</div>
 					<div class="form-group">
+						<label>Harga</label>
+						<input type="number" class="form-control form-control-sm" name="harga" placeholder="xxxxxxxxx">
+					</div>
+					<div class="form-group">
 						<label>Jumlah</label>
 						<input type="number" class="form-control form-control-sm" name="total" placeholder="xxxxxxxxx">
 					</div>
@@ -123,6 +128,11 @@
 </div>
 <script>
 	$(document).ready(function() {
+		const uang = new Intl.NumberFormat('ID-id', {
+			style: 'currency',
+			currency: 'IDR',
+			minimumFractionDigits: 0
+		});
 		const table = $('#tbl-barang').DataTable({
 			processing: true,
 			serverSide: true,
@@ -154,6 +164,10 @@
 							return data
 						}
 					}
+				}, // Tampilkan alamat
+				{
+					data: "harga",
+					name: 'harga',
 				}, // Tampilkan alamat
 				{
 					data: "total",

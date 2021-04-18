@@ -12,41 +12,16 @@ class Backend_model extends CI_Model
 	}
 	function getAllBarang()
 	{
-		return $this->db->get('tbl_barang');
+		return $this->db->get_where('tbl_barang', array('is_aktif' => 1));
 	}
 	function getAllStok()
 	{
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total');
+		$this->db->select('b.nama_barang, b.kode_barang, b.id, s.kode_batch, s.tgl_expired, s.total, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->where('b.is_aktif', 1);
 		return $this->db->get();
 	}
-
-	// function getBarang()
-	// {
-	// 	$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
-	// 	$limit = $_POST['length']; // Ambil data limit per page
-	// 	$start = $_POST['start']; // Ambil data start
-	// 	$order_index = $_POST['order'][0]['column']; // Untuk mengambil index yg menjadi acuan untuk sorting
-	// 	$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
-	// 	$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
-
-	// 	$this->db->select('*')->from('tbl_barang');
-	// 	$this->db->like('kode_barang', $search);
-	// 	$this->db->or_like('nama_barang', $search);
-	// 	$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
-	// 	$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
-
-	// 	$this->db->select('*')->from('tbl_barang');
-	// 	$this->db->like('kode_barang', $search);
-	// 	$this->db->or_like('nama_barang', $search);
-	// 	$filtered = $this->db->get()->num_rows();
-	// 	$result = array_merge($result, ['recordsFiltered' => $filtered]);
-
-	// 	$total = $this->db->count_all('tbl_barang');
-	// 	$result = array_merge($result, ['recordsTotal' => $filtered]);
-	// 	return $result;
-	// }
 	function getBarang()
 	{
 		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
@@ -56,10 +31,32 @@ class Backend_model extends CI_Model
 		$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
 		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
 
-		$this->datatables->select('*');
-		$this->datatables->from('tbl_barang');
-		$this->datatables->like('kode_barang', $search);
-		return $this->datatables->or_like('nama_barang', $search);
+		$this->db->select('*');
+		$this->db->from('tbl_barang');
+		$this->db->group_start();
+		$this->db->like('kode_barang', $search, 'both');
+		$this->db->or_like('nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('is_aktif', 1);
+		$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
+		$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
+
+		$this->db->select('*');
+		$this->db->from('tbl_barang');
+		$this->db->group_start();
+		$this->db->like('kode_barang', $search, 'both');
+		$this->db->or_like('nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('is_aktif', 1);
+		$filtered = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsFiltered' => $filtered]);
+
+		$this->db->select('*');
+		$this->db->from('tbl_barang');
+		$this->db->where('is_aktif', 1);
+		$total = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsTotal' => $total]);
+		return $result;
 		// $this->datatables->generate();
 		// return $result;
 	}
@@ -78,15 +75,8 @@ class Backend_model extends CI_Model
 		// $this->datatables->generate();
 		// return $result;
 	}
-	function getStock()
+	function getUser()
 	{
-		// $search = $this->input->post('search')['value'] ? $this->input->post('search')['value'] : ''; // Ambil data yang di ketik user pada textbox pencarian
-		// $limit = $this->input->post('length') ? $this->input->post('length') : 20; // Ambil data limit per page
-		// $start = $this->input->post('start') ? $this->input->post('start') : 0; // Ambil data start
-		// $order_index = $this->input->post('order')[0]['column'] ? $this->input->post('order')[0]['column'] : 0; // Untuk mengambil index yg menjadi acuan untuk sorting
-		// $order_field = $this->input->post('column')[$order_index]['data'] ? $this->input->post('column')[$order_index]['data'] : 's.kode_barang'; // Untuk mengambil nama field yg menjadi acuan untuk sorting
-		// $order_ascdesc = $this->input->post('oder')[0]['dir'] ? $this->input->post('oder')[0]['dir'] : ''; // Untuk menentukan order by "ASC" atau "DESC"
-
 		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
 		$limit = $_POST['length']; // Ambil data limit per page
 		$start = $_POST['start']; // Ambil data start
@@ -94,51 +84,53 @@ class Backend_model extends CI_Model
 		$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
 		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
 
+		$this->datatables->select('*');
+		$this->datatables->from('tbl_user');
+		return $this->datatables->like('nama', $search);
+		// $this->datatables->generate();
+		// return $result;
+	}
+	function getStock()
+	{
+		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
+		$limit = $_POST['length']; // Ambil data limit per page
+		$start = $_POST['start']; // Ambil data start
+		$order_index = $_POST['order'][0]['column']; // Untuk mengambil index yg menjadi acuan untuk sorting
+		$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
+		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total');
+		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
-		$this->db->like('s.kode_barang', $search, 'both');
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->group_start();
+		$this->db->like('b.kode_barang', $search, 'both');
 		$this->db->or_like('b.nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('b.is_aktif', 1);
 		$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
 		$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total');
+		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 's.kode_barang = b.kode_barang', 'right outer');
-		$this->db->like('s.kode_barang', $search);
-		$this->db->or_like('b.nama_barang', $search);
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->group_start();
+		$this->db->like('b.kode_barang', $search, 'both');
+		$this->db->or_like('b.nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('b.is_aktif', 1);
 		$filtered = $this->db->get()->num_rows();
 		$result = array_merge($result, ['recordsFiltered' => $filtered]);
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total');
+		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->where('b.is_aktif', 1);
 		$total = $this->db->get()->num_rows();
 		$result = array_merge($result, ['recordsTotal' => $total]);
 		return $result;
-
-		// $search = $this->input->post('search')['value']; // Ambil data yang di ketik user pada textbox pencarian
-		// $this->datatables->select('tbl_barang.nama_barang, tbl_stok.*');
-		// $this->datatables->from('tbl_stok');
-		// return $this->datatables->join('tbl_barang', 'tbl_stok.kode_barang=tbl_barang.kode_barang', 'LEFT');
-		// $this->datatables->like('tbl_barang.nama_barang', $search);
-		// $this->datatables->or_like('tbl_stok.kode_barang', $search);
-		// $search = $this->input->post('search')['value']; // Ambil data yang di ketik user pada textbox pencarian
-		// $this->datatables->select('tbl_stok.*');
-		// $this->datatables->from('tbl_stok');
-		// return $this->datatables->join('tbl_barang', 'tbl_stok.kode_barang=tbl_barang.kode_barang', 'LEFT');
-		// return $this->datatables->like('tbl_stok.kode_barang', $search);
 	}
 	function getStockKeluar()
 	{
-		// $search = $this->input->post('search')['value'] ? $this->input->post('search')['value'] : ''; // Ambil data yang di ketik user pada textbox pencarian
-		// $limit = $this->input->post('length') ? $this->input->post('length') : 20; // Ambil data limit per page
-		// $start = $this->input->post('start') ? $this->input->post('start') : 0; // Ambil data start
-		// $order_index = $this->input->post('order')[0]['column'] ? $this->input->post('order')[0]['column'] : 0; // Untuk mengambil index yg menjadi acuan untuk sorting
-		// $order_field = $this->input->post('column')[$order_index]['data'] ? $this->input->post('column')[$order_index]['data'] : 's.kode_barang'; // Untuk mengambil nama field yg menjadi acuan untuk sorting
-		// $order_ascdesc = $this->input->post('oder')[0]['dir'] ? $this->input->post('oder')[0]['dir'] : ''; // Untuk menentukan order by "ASC" atau "DESC"
-
 		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
 		$limit = $_POST['length']; // Ambil data limit per page
 		$start = $_POST['start']; // Ambil data start
@@ -147,40 +139,35 @@ class Backend_model extends CI_Model
 		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
 
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.combined_key, b.harga');
+		$this->db->select('b.nama_barang, b.kode_barang, b.id as id_barang, s.id as id_stok, s.kode_batch, s.tgl_expired, s.total, s.combined_key, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
-		$this->db->like('s.kode_barang', $search, 'both');
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->group_start();
+		$this->db->like('b.kode_barang', $search, 'both');
 		$this->db->or_like('b.nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('b.is_aktif', 1);
 		$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
 		$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.combined_key, b.harga');
+		$this->db->select('b.nama_barang, b.kode_barang, b.id as id_barang, s.id as id_stok, s.kode_batch, s.tgl_expired, s.total, s.combined_key, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 's.kode_barang = b.kode_barang', 'right outer');
-		$this->db->like('s.kode_barang', $search);
-		$this->db->or_like('b.nama_barang', $search);
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->group_start();
+		$this->db->like('b.kode_barang', $search, 'both');
+		$this->db->or_like('b.nama_barang', $search, 'both');
+		$this->db->group_end();
+		$this->db->where('b.is_aktif', 1);
 		$filtered = $this->db->get()->num_rows();
 		$result = array_merge($result, ['recordsFiltered' => $filtered]);
 
-		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.combined_key, b.harga');
+		$this->db->select('b.nama_barang, b.kode_barang, s.id, s.kode_batch, s.tgl_expired, s.total, s.combined_key, s.harga');
 		$this->db->from('tbl_stok s');
-		$this->db->join('tbl_barang b', 'b.kode_barang = s.kode_barang', 'right outer');
+		$this->db->join('tbl_barang b', 'b.id = s.id_barang', 'right outer');
+		$this->db->where('b.is_aktif', 1);
 		$total = $this->db->get()->num_rows();
 		$result = array_merge($result, ['recordsTotal' => $total]);
 		return $result;
-
-		// $search = $this->input->post('search')['value']; // Ambil data yang di ketik user pada textbox pencarian
-		// $this->datatables->select('tbl_barang.nama_barang, tbl_stok.*');
-		// $this->datatables->from('tbl_stok');
-		// return $this->datatables->join('tbl_barang', 'tbl_stok.kode_barang=tbl_barang.kode_barang', 'LEFT');
-		// $this->datatables->like('tbl_barang.nama_barang', $search);
-		// $this->datatables->or_like('tbl_stok.kode_barang', $search);
-		// $search = $this->input->post('search')['value']; // Ambil data yang di ketik user pada textbox pencarian
-		// $this->datatables->select('tbl_stok.*');
-		// $this->datatables->from('tbl_stok');
-		// return $this->datatables->join('tbl_barang', 'tbl_stok.kode_barang=tbl_barang.kode_barang', 'LEFT');
-		// return $this->datatables->like('tbl_stok.kode_barang', $search);
 	}
 	function getIsSupplier()
 	{
@@ -189,7 +176,7 @@ class Backend_model extends CI_Model
 	}
 	function getIsBarang()
 	{
-		$data = $this->db->select('id, kode_barang, nama_barang, satuan')->from('tbl_barang')->get()->result();
+		$data = $this->db->select('id, kode_barang, nama_barang, satuan')->from('tbl_barang')->where('is_aktif', 1)->get()->result();
 		return $data;
 	}
 	function getIsBatch($kode)
@@ -205,5 +192,99 @@ class Backend_model extends CI_Model
 	function decrementStock($where, $data)
 	{
 		return $this->db->where($where)->set('total', "total - $data", FALSE)->update('tbl_stok');
+	}
+	function getRiwayatKeluar()
+	{
+		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
+		$limit = $_POST['length']; // Ambil data limit per page
+		$start = $_POST['start']; // Ambil data start
+		$order_index = $_POST['order'][0]['column']; // Untuk mengambil index yg menjadi acuan untuk sorting
+		$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
+		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
+
+
+		$this->db->select('tbk.*');
+		$this->db->from('tbl_barang_keluar tbk');
+		$this->db->like('tbk.kode_faktur', $search, 'both');
+		$this->db->or_like('tbk.tgl_transaksi', $search, 'both');
+		$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
+		$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
+
+		$this->db->select('tbk.*');
+		$this->db->from('tbl_barang_keluar tbk');
+		$this->db->like('tbk.kode_faktur', $search, 'both');
+		$this->db->or_like('tbk.tgl_transaksi', $search, 'both');
+		$filtered = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsFiltered' => $filtered]);
+
+		$this->db->select('tbk.*');
+		$this->db->from('tbl_barang_keluar tbk');
+		$total = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsTotal' => $total]);
+		return $result;
+	}
+	function getRiwayatMasuk()
+	{
+		$search = $_POST['search']['value']; // Ambil data yang di ketik user pada textbox pencarian
+		$limit = $_POST['length']; // Ambil data limit per page
+		$start = $_POST['start']; // Ambil data start
+		$order_index = $_POST['order'][0]['column']; // Untuk mengambil index yg menjadi acuan untuk sorting
+		$order_field = $_POST['columns'][$order_index]['data']; // Untuk mengambil nama field yg menjadi acuan untuk sorting
+		$order_ascdesc = $_POST['order'][0]['dir']; // Untuk menentukan order by "ASC" atau "DESC"
+
+
+		$this->db->select('tbm.*, s.nama_supplier');
+		$this->db->from('tbl_barang_masuk tbm');
+		$this->db->join('tbl_supplier s', 'tbm.id_supplier = s.id', 'LEFT');
+		$this->db->like('tbm.kode_faktur', $search, 'both');
+		$this->db->or_like('s.nama_supplier', $search, 'both');
+		$this->db->or_like('tbm.tgl_transaksi', $search, 'both');
+		$this->db->order_by($order_field, $order_ascdesc); // Untuk menambahkan query ORDER BY
+		$result['data'] = $this->db->limit($limit, $start)->get()->result_array();
+
+		$this->db->select('tbm.*, s.nama_supplier');
+		$this->db->from('tbl_barang_masuk tbm');
+		$this->db->join('tbl_supplier s', 'tbm.id_supplier = s.id', 'LEFT');
+		$this->db->like('tbm.kode_faktur', $search, 'both');
+		$this->db->or_like('s.nama_supplier', $search, 'both');
+		$this->db->or_like('tbm.tgl_transaksi', $search, 'both');
+		$filtered = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsFiltered' => $filtered]);
+
+		$this->db->select('tbm.*, s.nama_supplier');
+		$this->db->from('tbl_barang_masuk tbm');
+		$this->db->join('tbl_supplier s', 'tbm.id_supplier = s.id', 'LEFT');
+		$total = $this->db->get()->num_rows();
+		$result = array_merge($result, ['recordsTotal' => $total]);
+		return $result;
+	}
+
+	function getRiwayatMasukById($id)
+	{
+
+		// $data = $this->db->select('tbm.kode_faktur, tbm.grandtotal, tbm.tgl_transaksi, (SELECT nama_supplier from tbl_supplier where id = tbm.id_supplier) as nama_supplier')->from('tbl_barang_masuk tbm')->get()->row_array();
+		$data = $this->db->select('tbm.kode_faktur,tbm.grandtotal,tbm.tgl_transaksi, s.nama_supplier, s.alamat, s.email, s.telp')->from('tbl_barang_masuk tbm')->where('tbm.id', $id)->join('tbl_supplier s', 's.id = tbm.id_supplier')->get()->row_array();
+		// $detail = $this->db->get_where('tbl_barang_masuk_detail', array('id_barang_masuk' => $id))->result_array();
+		$detail = $this->db->select('td.kode_batch,td.harga,td.tgl_expired,td.jumlah,td.total, b.nama_barang, b.kode_barang')->from('tbl_barang_masuk_detail td')->join('tbl_barang b', 'b.id = td.id_barang')->where('td.id_barang_masuk', $id)->get()->result();
+		$data = array_merge($data, ['detail' => $detail]);
+		return $data;
+	}
+	function getRiwayatKeluarById($id)
+	{
+
+		// $data = $this->db->select('tbm.kode_faktur, tbm.grandtotal, tbm.tgl_transaksi, (SELECT nama_supplier from tbl_supplier where id = tbm.id_supplier) as nama_supplier')->from('tbl_barang_masuk tbm')->get()->row_array();
+		$data = $this->db->select('tbk.kode_faktur,tbk.jumlah,tbk.tgl_transaksi,tbk.pembeli')->from('tbl_barang_keluar tbk')->where('tbk.id', $id)->get()->row_array();
+		// $detail = $this->db->get_where('tbl_barang_keluar_detail', array('id_barang_keluar' => $id))->result_array();
+		$detail = $this->db->select('td.kode_batch,td.harga,td.tgl_expired,td.jumlah,td.total, b.nama_barang, b.kode_barang')->from('tbl_barang_keluar_detail td')->join('tbl_barang b', 'b.id = td.id_barang')->where('td.id_barang_keluar', $id)->get()->result();
+		$data = array_merge($data, ['detail' => $detail]);
+		return $data;
+	}
+	function getInfoPerusahaan()
+	{
+		return $this->db->get('tbl_perusahaan')->row();
+	}
+	function getInfoPeringatan()
+	{
+		return $this->db->get('tbl_setting')->row();
 	}
 }
